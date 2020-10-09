@@ -1,17 +1,16 @@
 # unique users:
-zcat login*.txt.gz | sed -n '/^w --/,/^endw --/p'|grep -v -e 'USER' -e 'load average' -e 'w --' -e 'endw --' |awk '{print $1}' | sort -u > unique.users
+cat login*.txt | sed -n '/^w --/,/^endw --/p'|grep -v -e 'USER' -e 'load average' -e 'w --' -e 'endw --' |awk '{print $1}' | sort -u|wc -l
 
 # users logged in hourly through a day
-for h in $(seq -w 00 23); do zcat login1.summit.olcf.ornl.gov.Feb06_2020.txt.gz |sed -n "/Hour $h/,/endsnap/p" | sed -n "/w --/,/endw --/p" | grep -v -e 'USER' -e 'load average' -e 'w --' -e 'endw --' | wc -l ; done
+for h in $(seq -w 00 23); do cat login1.summit.olcf.ornl.gov.Feb06_2020.txt |sed -n "/Hour $h/,/endsnap/p" | sed -n "/w --/,/endw --/p" | grep -v -e 'USER' -e 'load average' -e 'w --' -e 'endw --' | wc -l ; done
 
 # generate a sed script to anonymize unique users
-awk 'BEGIN { print "#!/usr/bin/sed -f" } { printf("s/\\b%s\\b/u%04d/g \n", $1, num);if (length($1)>7){printf("s/\\b%s\\+\\b/u%04d/g \n", substr($1,1,7), num)}; num++ }' unique.users > tmp && mv tmp unique.users.sed
+awk '{printf("-e s/%s/u%04d/g \\\n", $1, num++)}' unique.users > tmp && mv tmp unique.users
 
-# anonymize
-sed -i -f unique.users.sed anon/*/login*.txt
 
-# compress multiple spaces to one. Run only on anonymized data. In each directory.
-for i in *.txt; do tr -s ' ' < $i > tmp.txt && mv tmp.txt $i; done
+# adjust daily unique users data
+sed -e 's/\.summit\.olcf\.ornl\.gov\./ /g' -e 's/\.txt\.gz//g' -e 's/_2020//g' dailyuniqueusers.txt > daily_unique_users2020.txt
+awk '{print $2,$1,$3}' daily_unique_users2020.txt > tmp && mv tmp daily_unique_users2020.txt 
 
-# what people are running
-sed -n '/^ps aux/,/^endps aux/p' *.txt
+# Extract what commands users are running
+sed -n '/ps aux/,/endps aux/p' login5.summit.olcf.ornl.gov.Oct03_2020.txt | awk '{s = ""; for (i = 11; i <= NF; i++) s = s $i " "; print s}'
