@@ -1,0 +1,290 @@
+\documentclass[sigconf]{acmart}
+
+%%
+%% \BibTeX command to typeset BibTeX logo in the docs
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+
+%% Rights management information.  This information is sent to you
+%% when you complete the rights form.  These commands have SAMPLE
+%% values in them; it is your responsibility as an author to replace
+%% the commands and values with those provided to you when you
+%% complete the rights form.
+\setcopyright{acmcopyright}
+\copyrightyear{2018}
+\acmYear{2018}
+\acmDOI{10.1145/1122445.1122456}
+
+%% These commands are for a PROCEEDINGS abstract or paper.
+\acmConference[HPCSysPros 20]{HPCSysPros 20}{November 2020}{Atlanta, GA}
+\acmBooktitle{HPCSysPros 20}
+%\acmPrice{15.00}
+%\acmISBN{978-1-4503-XXXX-X/18/06}
+
+%%
+%% Submission ID.
+%% Use this when submitting an article to a sponsored event. You'll
+%% receive a unique submission ID from the organizers
+%% of the event, and this ID should be used as the parameter to this command.
+%%\acmSubmissionID{123-A56-BU3}
+
+%%
+%% The majority of ACM publications use numbered citations and
+%% references.  The command \citestyle{authoryear} switches to the
+%% "author year" style.
+%%
+%% If you are preparing content for an event
+%% sponsored by ACM SIGGRAPH, you must use the "author year" style of
+%% citations and references.
+%% Uncommenting
+%% the next command will enable that style.
+%%\citestyle{acmauthoryear}
+
+%%
+%% end of the preamble, start of the body of the document source.
+\begin{document}
+
+%%
+%% The "title" command has an optional parameter,
+%% allowing the author to define a "short title" to be used in page headers.
+\title{Observation, Analysis and Publication of Hourly Usage data on Summit Login Nodes}
+
+%%
+%% The "author" command and its associated commands are used to define
+%% the authors and their affiliations.
+%% Of note is the shared affiliation of the first two authors, and the
+%% "authornote" and "authornotemark" commands
+%% used to denote shared contribution to the research.
+\author{K C M}
+\authornote{All authors contributed equally to this research.}
+\email{km0@ornl.gov}
+%\orcid{1234-5678-9012}
+\author{S P K}
+\authornotemark[1]
+\email{spk@ornl.gov}
+\affiliation{%
+  \institution{ORNL}
+  \streetaddress{1 Bethel Road}
+  \city{Oak Ridge}
+  \state{Tennessee}
+  \postcode{37932}
+}
+
+%%
+%% By default, the full list of authors will be used in the page
+%% headers. Often, this list is too long, and will overlap
+%% other information printed in the page headers. This command allows
+%% the author to define a more concise list
+%% of authors' names for this purpose.
+\renewcommand{\shortauthors}{Maheshwari and Parete-Koon}
+
+%%
+%% The abstract is a short summary of the work to be presented in the
+%% article.
+\begin{abstract}
+
+We observe and analyze usage of Summit login nodes by collecting hourly data on
+various activities such as users logged in, running processes, scheduled jobs
+etc..  The data is collected by running simple Linux commands in user-mode.  We
+perform the analysis on usage over time and figure out critical usage
+parameters.
+
+\end{abstract}
+
+%%
+%% Keywords. The author(s) should pick words that accurately describe
+%% the work being presented. Separate the keywords with commas.
+\keywords{data, analysis, observation}
+
+\maketitle
+
+\section{Introduction}
+Summit is one of the leadership class supercomputers hosted at the Oak Ridge
+National Laboratory. In this work, we attempt to identify long term usage
+patterns by collecting observational data on Summit login nodes. The data is
+collected every hour starting January 1, 2020 on all five login nodes.
+
+We describe the methodology, observation, processing and publishing process in this paper.
+
+\section{Methods}
+Commands in a shell script. Run using a while loop inside a tmux session.
+\subsection{What data is collected}
+
+\subsection{Anonimization}
+
+\section{Traditional Monitoring Tools}
+Why Check\_MK like monitoring tool is not suitable for such readings? -- can't
+give overall view of the systems at a given time. Hard to capture snapshots.
+
+\section{Benefits}
+Find if any compute heavy work is being done on login nodes.
+A comprehensive data just before an outage.
+Can be used as an effective post-mortem tool if/when a node dies.
+Can be used to advocate for more resources such as DTNs if load is found consistently high on them.
+
+\section{Acknowledgments}
+This work was sponsored by the U.S. Department of Energy, Office of Science,
+Basic Energy Sciences, Materials Science and Engineering Division under
+Contract No. DE-AC05-00OR22725.
+
+%%
+%% The next two lines define the bibliography style to be used, and
+%% the bibliography file.
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{sample-base}
+
+%%
+%% If your work has an appendix, this is the place to put it.
+\appendix
+Test appendix
+
+\end{document}
+\endinput
+%%
+%% End of file `sample-sigconf.tex'.
+
+
+initial work with a script that runs in crontab and gathers user's info hourly.
+Next we try and quantify the max capacity of those parameters that could be used concurrently by n number of users.
+
+SPK: We could advertise the results in a town hall and if we get a publication,
+we/you can present it at and then I can highlight it in a feature article for
+ORNL today.
+
+Then we try to come with some kind of stochasticity on how many users are
+likely to be online at a given time and what does that correspond in terms of
+resources and come up with a "normalization unit" or something of the sort.
+Then, we say, CADES is X "normalized units" in capacity! Just some cool
+sounding term. 
+
+---
+
+https://www.hpcwire.com/2015/05/08/cluster-lifecycle-management-capacity-planning-and-reporting/
+
+---
+
+Parameters:
+
+Users
+ unique
+ users with multiple sessions
+
+Applications
+ Compute intensive
+ Memory intensive
+ I/O intensive
+
+Pure I/O tasks
+ rsync
+ scp
+
+Interactive
+ Jupyter
+
+NFS load
+
+Lustre load
+
+Networks between compute and storage
+
+---
+
+Stress test
+
+-- number of ssh sessions
+-- Applications
+
+---
+What is the capacity in isolation for each of the following parameters:
+
+-- number of ssh sessions
+-- number of jobs
+-- number of open files/ports
+-- bandwidth between cluster and NFS
+-- bandwidth between cluster and Lustre
+
+---
+NERSC has some kind of a plot -- related but not exactly to what we are doing here.
+Duke did a Hadoop cluster related capacity planning
+
+---
+
+Let's say there are N parameters that determine a cluster's capacity. What do their limits look like in isolation?
+
+A Normalized unit of cluster capacity.
+
+How many login nodes are needed to support a given cluster? For a given number of users.
+
+Maximum sustained data movement rate between scratch and persistent storage?
+^^^ Many papers about this.
+
+Run the snapshot script for 1 year. The total data would be 24*365*52K*5nodes = Approx 2G.
+
+Run on DTNs too -- started!
+Run timed commands too -- done. Running ls on NFS and Lustre.
+
+Given the current utilization of everything on the cluster, can we figure out
+what is the "capacity units" at which the cluster is being utilized?
+
+Can we figure out the coefficients on each of the N parameters that determine a
+cluster's capacity and then figure out what the values are for those
+coefficients for a given cluster? Can we figure out what we can do about those
+coefficients?
+
+Can we derive a formula that would identify the cluster usage based on that coefficient?
+
+Failures -- How to take failures into account?
+
+Can we analyze tickets? -- At least we can identify number of tickets.
+
+Characterize the cluster users as -- compute heavy, IO heavy, memory heavy or just idling.
+
+Find out the green patches -- when the cluster is working at its smoothest.
+
+How does the job reservations affect cluster utilization?
+
+---
+
+Artificial stress tests:
+- Hit the queue with a ton of jobs
+- Bombard NFS and lustre with huge files
+- What does it take to bring a login node down/overwhelm -- Filesystem, processes, memory
+- Read more on stress tests and check with Veronica
+- Design a job that stress tests:
+  -- compute
+  -- Memory
+  -- Storage - both NFS and Lustre
+  -- Network
+  -- Scheduler
+
+-- Stress test login nodes
+-- Create fake ssh sessions
+-- Create a bunch of processes
+
+-- Can we find the CWD of a process using ps?
+
+-- Questions from Suzanne:
+Login nodes
+How may unique users do we have on a node any at given time. 
+How many processes each? 
+What are the mean max and min time (user's processes)  are running on the login nodes? 
+Does this change with time of day? 
+What are the most frequently done tasks? Does this change with time of day? 
+What are our busiest times of day/ days of the week? 
+Quantify what node abuse looks like and then find Which users are abusing the nodes and what are they running. 
+Are the nodes more diminished by memory intensive tasks or CPU tasks? 
+What is breaking point? 
+Who are the max offenders and what are they doing? 
+
+Summit has cgroups in place for login nodes -- find out what they are.
+
+We get about half Summit's load with many fewer than half the resources. I
+wonder what our relative rations of users per GB of storage and memory, users
+per compute node and users per login are?
+
+random idea to help address touch file bombers. You said you were take
+snapshots of processes on occasion. You could leverage that to automatically
+notify CADES and/or user whenever command/process of touch lasts longer than a
+second and who the offender is. Let them know we are watching and frowning
+would need a different solution for touch loops
