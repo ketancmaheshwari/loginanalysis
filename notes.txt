@@ -1,0 +1,168 @@
+
+We are collecting hourly data since January 1, 2020 on about 12 systems here at ORNL including the Summit supercomputer. The data include the users who are logged in, cpu, disk and memory snapshots, process snapshots, performance snapshots on the disk and more.
+ 
+Trajectory 1 is to improve and standardize the data collection process. Currently it is in the form of plain-text data collection using a shell script. This can be improved by developing a modularized python package that collects and organizes data in a standard data format such as json. Converting existing data to json as a module.
+ 
+Trajectory 2 is to work on identifying useful data analysis challenges and implementing the solutions such as anonymization of data,  visualization of various trends, predicting future patterns based on existing usage, finding correlation between data and other events at the center and elsewhere, understanding the causes of crashes on the system and its correlation with usage, and more.
+ 
+ We can advise center administrators on what we find on the analysis. We can also publish this work and data (anonymized) for the broader HPC community to learn from our experience.
+
+hourly data about user's activities and system status such as memory and disk statistics are collected. This data can answer several questions that are valuable to center administrators such as:
+
+            -- What are the most and least busy times on the center usage?
+            -- What kind of programs are run most frequently?
+            -- Are there any abuse or misuse of the resources by running programs on login nodes vs compute nodes?
+            -- What are the storage space fill-up rates?
+            -- Are the login nodes load balanced properly?
+            -- What parameters are critical wrt outages?/Factors that cause outages?
+
+            The desired interests and/or experience for the potential candidate include data analytics, basic python, basic Linux. Experience with ML/DL techniques is a plus.
+
+            The activities include anonymizing the data, preprocessing for filtering out useful data out of the corpus, mapping dates with days of the week and times with any other significant events (public holidays, power outage, traffic etc). Plotting the results as graphs, pie charts, etc for visualization and presentation.
+ 
+Capacity and Resiliency
+Capacity and Performance
+---
+
+About the CADES theoretical capacity topic that we discussed two meetings ago. Would you still be interested in that work?
+initial work with a script that runs in crontab and gathers user's info hourly.
+I was thinking of using this research as a vehicle to get the word out about what we are doing at CADES.
+The rough and vague idea is that we perform the analysis on CADES usage over some time and figure out critical usage parameters.
+Next we try and quantify the max capacity of those parameters that could be used concurrently by n number of users.
+
+SPK: We could advertise the results in a town hall and if we get a publication,
+we/you can present it at and then I can highlight it in a feature article for
+ORNL today.
+
+Then we try to come with some kind of stochasticity on how many users are
+likely to be online at a given time and what does that correspond in terms of
+resources and come up with a "normalization unit" or something of the sort.
+Then, we say, CADES is X "normalized units" in capacity! Just some cool
+sounding term.
+
+---
+
+https://www.hpcwire.com/2015/05/08/cluster-lifecycle-management-capacity-planning-and-reporting/
+
+---
+
+Parameters:
+
+Users
+ unique
+ users with multiple sessions
+
+Applications
+ Compute intensive
+ Memory intensive
+ I/O intensive
+
+Pure I/O tasks
+ rsync
+ scp
+
+Interactive
+ Jupyter
+
+NFS load
+
+Lustre load
+
+Networks between compute and storage
+
+---
+
+Stress test
+
+-- number of ssh sessions
+-- Applications
+
+---
+What is the capacity in isolation for each of the following parameters:
+
+-- number of ssh sessions
+-- number of jobs
+-- number of open files/ports
+-- bandwidth between cluster and NFS
+-- bandwidth between cluster and Lustre
+
+---
+NERSC has some kind of a plot -- related but not exactly to what we are doing here.
+Duke did a Hadoop cluster related capacity planning
+
+---
+
+Let's say there are N parameters that determine a cluster's capacity. What do their limits look like in isolation?
+
+A Normalized unit of cluster capacity.
+
+How many login nodes are needed to support a given cluster? For a given number of users.
+
+Maximum sustained data movement rate between scratch and persistent storage?
+^^^ Many papers about this.
+
+Run the snapshot script for 1 year. The total data would be 24*365*52K*5nodes = Approx 2G.
+
+Run on DTNs too -- started!
+Run timed commands too -- done. Running ls on NFS and Lustre.
+
+Given the current utilization of everything on the cluster, can we figure out what is the "capacity units" at which the cluster is being utilized?
+
+Can we figure out the coefficients on each of the N parameters that determine a cluster's capacity and then figure out what the values are for those coefficients for a given cluster? Can we figure out what we can do about those coefficients?
+
+Can we derive a formula that would identify the cluster usage based on that coefficient?
+
+Failures -- How to take failures into account?
+
+Can we analyze tickets? -- At least we can identify number of tickets.
+
+Characterize the cluster users as -- compute heavy, IO heavy, memory heavy or just idling.
+
+Find out the green patches -- when the cluster is working at its smoothest.
+
+How does the job reservations affect cluster utilization?
+
+---
+
+Artificial stress tests:
+- Hit the queue with a ton of jobs
+- Bombard NFS and lustre with huge files
+- What does it take to bring a login node down/overwhelm -- Filesystem, processes, memory
+- Read more on stress tests and check with Veronica
+- Design a job that stress tests:
+  -- compute
+  -- Memory
+  -- Storage - both NFS and Lustre
+  -- Network
+  -- Scheduler
+
+
+-- Stress test login nodes
+-- Create fake ssh sessions
+-- Create a bunch of processes
+
+-- Can we find the CWD of a process using ps?
+
+-- Questions from Suzanne:
+Login nodes
+How may unique users do we have on a node any at given time.
+How many processes each?
+What are the mean max and min time (user's processes)  are running on the login nodes?
+Does this change with time of day?
+What are the most frequently done tasks? Does this change with time of day?
+What are our busiest times of day/ days of the week?
+Quantify what node abuse looks like and then find Which users are abusing the nodes and what are they running.
+Are the nodes more diminished by memory intensive tasks or CPU tasks?
+What is breaking point?
+Who are the max offenders and what are they doing?
+
+Can be used as an effective post-mortem tool if/when a node dies.
+Can be used to advocate for more resources such as DTNs if load is found consistently high on them.
+
+Why Check_MK like monitoring tool is not suitable for such readings? -- can't give overall view of the systems at a given time. Hard to capture snapshots.
+
+We get about half Summit's load with many fewer than half the resources. I wonder what our relative rations of users per GB of storage and memory, users per compute node and users per login are?
+
+random idea to help address touch file bombers. You said you were take snapshots of processes on occasion. You could leverage that to automatically notify CADES and/or user whenever command/process of touch lasts longer than a second and who the offender is. Let them know we are watching and frowning
+would need a different solution for touch loops
+
