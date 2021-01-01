@@ -166,3 +166,15 @@ We get about half Summit's load with many fewer than half the resources. I wonde
 random idea to help address touch file bombers. You said you were take snapshots of processes on occasion. You could leverage that to automatically notify CADES and/or user whenever command/process of touch lasts longer than a second and who the offender is. Let them know we are watching and frowning
 would need a different solution for touch loops
 
+
+== Collection Workflow ==
+cron job
+run.sh
+gzip
+backup
+
+== Processing Workflow ==
+Unzip data
+Anonymize data
+Process data
+
