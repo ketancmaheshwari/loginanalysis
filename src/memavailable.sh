@@ -1,3 +1,5 @@
+#!/bin/bash
+
 for i in *.txt.gz
 do
     # unique users:
