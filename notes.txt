@@ -171,3 +171,27 @@ Unzip data
 Anonymize data
 Process data
 
+=================== Interpretations of the outputs of commands ====================
+== w command
+The header shows, in this order, the current time, how long the system has been
+running, how many users are currently logged on, and the system load averages
+for the past 1, 5, and 15 minutes.
+
+The following entries are displayed for each user: login name, the tty name,
+the remote host, login time, idle time, JCPU, PCPU, and the command line of
+their current process. The JCPU time is the time used by all processes attached
+to the tty. It does not include past background jobs, but does include
+currently running background jobs. The PCPU time is the time used by the
+current process, named in the "what" field.
+
+== ps aux command
+Interesting process stats that might be collected from here would be:
+status marked Z (defunct) zombie processes
+Processes that are long running -- START more than a day
+High CPU consuming processes -- 90%+ (CPU intensive)
+High memory consuming processes -- 90%+ (Memory intensive)
+Average and high RSS (it is physical memory in KBs) Some memory in RSS is not included (<20KiB, see ps(1))
+VSZ is virtual memory size (may be not of too much interest)
+TIME is cumulative CPU time in [DD--]hh:mm:ss format
+START starting time or date of the process.  Only the year will be displayed if the process was not started the same year ps was invoked, or "MmmDD" if it was not started the same day, or "HH:MM" otherwise. Interesting to see so many processes still has 2020 in the line half-way into January.
+COMMAND May be interesting to understand what kinds of commands are most frequently used: python, compilation, rsync, trivial etc.
