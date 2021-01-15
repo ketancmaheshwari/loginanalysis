@@ -195,3 +195,13 @@ VSZ is virtual memory size (may be not of too much interest)
 TIME is cumulative CPU time in [DD--]hh:mm:ss format
 START starting time or date of the process.  Only the year will be displayed if the process was not started the same year ps was invoked, or "MmmDD" if it was not started the same day, or "HH:MM" otherwise. Interesting to see so many processes still has 2020 in the line half-way into January.
 COMMAND May be interesting to understand what kinds of commands are most frequently used: python, compilation, rsync, trivial etc.
+
+== The top command
+Interpret the header line.
+
+== bjobs output useful columns
+stat
+slots
+queue
+start_time
+finish_time
